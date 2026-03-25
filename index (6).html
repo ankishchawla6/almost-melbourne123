@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ankish &amp; Simar — Almost Melbourne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --midnight: #0a0d1a; --deep-blue: #0f1628; --navy: #141d35; --blue-mid: #1c2a4a;
+  --gold: #c9a84c; --gold-light: #e8c870; --gold-pale: #f5e4b0;
+  --blush: #e8a0a0; --blush-soft: #f2c4c4; --cream: #faf3e8;
+  --text-muted: rgba(250,243,232,0.5); --text-dim: rgba(250,243,232,0.75);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--midnight); color:var(--cream); font-family:'DM Sans',sans-serif; font-weight:300; min-height:100vh; overflow-x:hidden; }
+
+.stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star { position:absolute; width:2px; height:2px; background:white; border-radius:50%; animation:twinkle var(--d,4s) ease-in-out infinite var(--delay,0s); opacity:0; }
+@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op,0.6)} }
+
+nav { position:sticky; top:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:rgba(10,13,26,0.9); backdrop-filter:blur(16px); border-bottom:1px solid rgba(201,168,76,0.12); }
+.nav-logo { font-family:'Cormorant Garamond',serif; font-size:1.05rem; font-style:italic; color:var(--gold-light); }
+.nav-tabs { display:flex; gap:4px; }
+.nav-tab { padding:6px 13px; border-radius:20px; border:1px solid transparent; background:transparent; color:var(--text-dim); font-family:'DM Sans',sans-serif; font-size:0.73rem; font-weight:400; cursor:pointer; transition:all 0.2s; letter-spacing:0.04em; text-transform:uppercase; }
+.nav-tab:hover { color:var(--cream); background:rgba(201,168,76,0.08); }
+.nav-tab.active { color:var(--gold-light); background:rgba(201,168,76,0.12); border-color:rgba(201,168,76,0.3); }
+
+.page { display:none; }
+.page.active { display:block; }
+.container { max-width:480px; margin:0 auto; padding:0 18px 80px; position:relative; z-index:1; }
+
+.hero-photo-wrap { margin:26px 0 0; position:relative; }
+.hero-photo-placeholder { width:100%; aspect-ratio:4/3; border-radius:18px; background:linear-gradient(135deg,#1a2340,#0f1628,#1c2840); display:flex; flex-direction:column; align-items:center; justify-content:center; border:1px dashed rgba(201,168,76,0.35); box-shadow:0 0 60px rgba(201,168,76,0.1),0 20px 60px rgba(0,0,0,0.5); gap:10px; cursor:pointer; transition:all 0.3s; position:relative; overflow:hidden; }
+.hero-photo-placeholder::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 50% 50%,rgba(201,168,76,0.05),transparent 70%); animation:pglow 3s ease-in-out infinite; }
+@keyframes pglow { 0%,100%{opacity:0.5} 50%{opacity:1} }
+.hero-photo-placeholder:hover { border-color:rgba(201,168,76,0.6); }
+.photo-icon { font-size:2.2rem; opacity:0.6; }
+.photo-label { font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--gold); font-style:italic; opacity:0.8; }
+.photo-sub { font-size:0.68rem; color:var(--text-muted); letter-spacing:0.06em; text-transform:uppercase; }
+#photo-input { display:none; }
+.hero-uploaded { width:100%; aspect-ratio:4/3; border-radius:18px; object-fit:cover; display:none; border:1px solid rgba(201,168,76,0.2); box-shadow:0 0 60px rgba(201,168,76,0.1),0 20px 60px rgba(0,0,0,0.5); }
+.names-bar { position:absolute; bottom:14px; left:14px; right:14px; display:flex; justify-content:space-between; align-items:flex-end; }
+.name-tag { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-style:italic; color:white; text-shadow:0 2px 12px rgba(0,0,0,0.8); }
+.heart-center { font-size:1.3rem; animation:hb 2s ease-in-out infinite; }
+@keyframes hb { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
+.countdown-wrap { margin-top:24px; background:linear-gradient(135deg,rgba(20,29,53,0.9),rgba(15,22,40,0.9)); border-radius:16px; border:1px solid rgba(201,168,76,0.2); padding:22px; text-align:center; position:relative; overflow:hidden; }
+.countdown-wrap::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:60%; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); }
+.countdown-label { font-size:0.65rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; opacity:0.85; }
+.countdown-grid { display:flex; justify-content:center; gap:10px; }
+.cd-unit { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.cd-num { font-family:'Cormorant Garamond',serif; font-size:2.6rem; font-weight:300; color:var(--gold-light); line-height:1; min-width:64px; text-align:center; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.15); border-radius:10px; padding:9px 6px 5px; }
+.cd-lbl { font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); }
+.cd-sep { font-family:'Cormorant Garamond',serif; font-size:2rem; color:var(--gold); opacity:0.4; padding-top:6px; align-self:flex-start; }
+.countdown-sub { margin-top:12px; font-family:'Cormorant Garamond',serif; font-size:0.85rem; font-style:italic; color:var(--text-muted); }
+
+.section-head { margin-top:32px; margin-bottom:18px; }
+.section-title { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:300; color:var(--cream); }
+.section-subtitle { font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-top:3px; }
+
+.timeline { position:relative; padding-left:26px; }
+.timeline::before { content:''; position:absolute; left:6px; top:12px; bottom:12px; width:1px; background:linear-gradient(180deg,var(--gold),rgba(201,168,76,0.3) 80%,transparent); }
+.tl-item { position:relative; padding:0 0 26px; }
+.tl-dot { position:absolute; left:-23px; top:12px; width:13px; height:13px; border-radius:50%; background:var(--gold); border:2px solid var(--midnight); box-shadow:0 0 10px rgba(201,168,76,0.5); }
+.tl-dot.future { background:transparent; border-color:rgba(201,168,76,0.4); animation:gp 2s ease-in-out infinite; }
+@keyframes gp { 0%,100%{box-shadow:0 0 8px rgba(201,168,76,0.3)} 50%{box-shadow:0 0 20px rgba(201,168,76,0.7),0 0 40px rgba(201,168,76,0.3)} }
+.tl-date { font-size:0.65rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:4px; opacity:0.85; }
+.tl-title { font-family:'Cormorant Garamond',serif; font-size:1.1rem; font-weight:600; color:var(--cream); margin-bottom:3px; }
+.tl-desc { font-size:0.78rem; color:var(--text-dim); line-height:1.6; }
+.tl-item.future .tl-title { color:var(--gold-light); font-style:italic; }
+.tl-item.future .tl-desc { color:rgba(201,168,76,0.6); }
+
+.divider { height:1px; background:linear-gradient(90deg,transparent,rgba(201,168,76,0.15),transparent); margin:28px 0; }
+.pill-badge { display:inline-block; padding:3px 10px; border-radius:20px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.2); font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--gold); vertical-align:middle; }
+
+.quiz-card { background:linear-gradient(135deg,rgba(20,29,53,0.95),rgba(12,18,35,0.95)); border:1px solid rgba(201,168,76,0.2); border-radius:18px; padding:24px; position:relative; overflow:hidden; }
+.quiz-card::before { content:''; position:absolute; top:-40px; right:-40px; width:120px; height:120px; background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%); border-radius:50%; }
+.quiz-category-badge { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25); border-radius:20px; font-size:0.63rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+.quiz-question { font-family:'Cormorant Garamond',serif; font-size:1.2rem; color:var(--cream); line-height:1.5; margin-bottom:20px; }
+.quiz-options { display:flex; flex-direction:column; gap:9px; }
+.quiz-option { display:flex; align-items:center; gap:11px; padding:11px 14px; border-radius:11px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); cursor:pointer; transition:all 0.2s; font-size:0.82rem; color:var(--text-dim); text-align:left; width:100%; }
+.quiz-option:hover { border-color:rgba(201,168,76,0.35); background:rgba(201,168,76,0.06); color:var(--cream); }
+.quiz-option.selected { border-color:var(--gold); background:rgba(201,168,76,0.12); color:var(--cream); }
+.opt-letter { width:24px; height:24px; border-radius:50%; background:rgba(201,168,76,0.1); border:1px solid rgba(201,168,76,0.25); display:flex; align-items:center; justify-content:center; font-size:0.68rem; color:var(--gold); font-weight:500; flex-shrink:0; transition:all 0.2s; }
+.quiz-option.selected .opt-letter { background:var(--gold); color:var(--midnight); }
+
+.submit-btn { width:100%; margin-top:16px; padding:13px; background:linear-gradient(135deg,var(--gold),#b8912e); border:none; border-radius:11px; color:var(--midnight); font-family:'DM Sans',sans-serif; font-size:0.8rem; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; transition:all 0.25s; box-shadow:0 4px 20px rgba(201,168,76,0.3); }
+.submit-btn:hover { box-shadow:0 6px 28px rgba(201,168,76,0.45); transform:translateY(-1px); }
+.submit-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.locked-notice { display:none; margin-top:14px; padding:13px 14px; background:rgba(201,168,76,0.06); border:1px solid rgba(201,168,76,0.2); border-radius:11px; text-align:center; }
+.locked-notice .lock-icon { font-size:1.3rem; margin-bottom:5px; display:block; }
+.locked-notice p { font-size:0.78rem; color:var(--text-dim); line-height:1.5; }
+.locked-notice strong { color:var(--gold-light); }
+
+.reveal-wrap { display:none; margin-top:16px; }
+.reveal-wrap.show { display:block; animation:su 0.5s ease; }
+@keyframes su { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.reveal-header { text-align:center; margin-bottom:14px; }
+.reveal-title { font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; color:var(--gold-light); }
+.reveal-answers { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.reveal-person { background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:11px; padding:13px; text-align:center; }
+.reveal-name { font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); margin-bottom:7px; opacity:0.8; }
+.reveal-ans { font-family:'Cormorant Garamond',serif; font-size:0.9rem; color:var(--cream); line-height:1.4; }
+.match-bar-wrap { text-align:center; padding:14px; background:rgba(201,168,76,0.05); border-radius:11px; border:1px solid rgba(201,168,76,0.15); }
+.match-label { font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+.match-pct { font-family:'Cormorant Garamond',serif; font-size:2.2rem; color:var(--gold-light); line-height:1; }
+.match-heart { font-size:0.8rem; color:var(--blush); margin-left:5px; }
+
+.quiz-nav { display:flex; justify-content:space-between; align-items:center; margin-top:14px; }
+.quiz-nav-btn { padding:7px 16px; border-radius:20px; background:transparent; border:1px solid rgba(201,168,76,0.25); color:var(--text-dim); font-size:0.72rem; cursor:pointer; transition:all 0.2s; }
+.quiz-nav-btn:hover { background:rgba(201,168,76,0.08); color:var(--cream); }
+.quiz-counter { font-size:0.68rem; color:var(--text-muted); letter-spacing:0.08em; }
+
+.categories-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+.cat-card { background:rgba(20,29,53,0.8); border:1px solid rgba(201,168,76,0.12); border-radius:14px; padding:16px 14px; cursor:pointer; transition:all 0.25s; text-align:center; }
+.cat-card:hover, .cat-card.active { border-color:rgba(201,168,76,0.4); background:rgba(201,168,76,0.07); transform:translateY(-2px); }
+.cat-icon { font-size:1.5rem; margin-bottom:7px; display:block; }
+.cat-name { font-family:'Cormorant Garamond',serif; font-size:0.9rem; color:var(--cream); margin-bottom:3px; }
+.cat-count { font-size:0.62rem; color:var(--text-muted); letter-spacing:0.05em; }
+
+.persona-select { display:flex; gap:10px; margin-bottom:18px; }
+.persona-btn { flex:1; padding:11px; border-radius:11px; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03); color:var(--text-dim); font-size:0.78rem; cursor:pointer; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.persona-btn.active { border-color:var(--gold); background:rgba(201,168,76,0.1); color:var(--gold-light); }
+.persona-btn span:first-child { font-size:1.2rem; }
+
+.info-note { display:flex; align-items:flex-start; gap:10px; padding:11px 13px; background:rgba(201,168,76,0.05); border-left:2px solid rgba(201,168,76,0.4); border-radius:0 9px 9px 0; margin-bottom:18px; }
+.info-note p { font-size:0.73rem; color:var(--text-dim); line-height:1.6; }
+
+.archive-item { background:rgba(20,29,53,0.7); border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:16px; margin-bottom:10px; transition:all 0.2s; }
+.archive-item:hover { border-color:rgba(201,168,76,0.2); }
+.archive-item-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:9px; }
+.archive-cat { font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); opacity:0.8; }
+.archive-match { font-family:'Cormorant Garamond',serif; font-size:1.15rem; color:var(--gold-light); }
+.archive-q { font-size:0.8rem; color:var(--text-dim); line-height:1.5; margin-bottom:11px; }
+.archive-answers { display:flex; gap:7px; }
+.arch-ans-chip { flex:1; padding:6px 9px; border-radius:7px; font-size:0.7rem; line-height:1.3; text-align:center; }
+.arch-ans-chip.match { background:rgba(111,207,138,0.1); border:1px solid rgba(111,207,138,0.25); color:#a8e6b8; }
+.arch-ans-chip.diff { background:rgba(232,160,160,0.08); border:1px solid rgba(232,160,160,0.2); color:var(--blush-soft); }
+.arch-ans-name { font-size:0.58rem; letter-spacing:0.08em; text-transform:uppercase; opacity:0.7; display:block; margin-bottom:2px; }
+.empty-archive { text-align:center; padding:50px 20px; }
+.empty-archive .icon { font-size:2.2rem; margin-bottom:12px; opacity:0.5; display:block; }
+.empty-archive p { font-family:'Cormorant Garamond',serif; font-size:0.95rem; font-style:italic; color:var(--text-muted); }
+
+/* GitHub Guide */
+.github-guide { padding:10px 0 60px; }
+.step-item { display:flex; gap:14px; padding:18px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.step-item:last-child { border-bottom:none; }
+.step-num { width:32px; height:32px; border-radius:50%; background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3); display:flex; align-items:center; justify-content:center; font-family:'Cormorant Garamond',serif; font-size:1rem; color:var(--gold); flex-shrink:0; margin-top:2px; }
+.step-content { flex:1; }
+.step-title { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:var(--cream); margin-bottom:5px; }
+.step-desc { font-size:0.77rem; color:var(--text-dim); line-height:1.7; }
+.step-desc a { color:var(--gold-light); text-decoration:none; }
+.step-desc a:hover { text-decoration:underline; }
+.code-block { background:rgba(0,0,0,0.4); border:1px solid rgba(201,168,76,0.15); border-radius:8px; padding:10px 13px; margin-top:8px; font-family:monospace; font-size:0.75rem; color:var(--gold-pale); line-height:1.8; white-space:pre; overflow-x:auto; }
+.tip-box { background:rgba(201,168,76,0.05); border:1px solid rgba(201,168,76,0.2); border-radius:11px; padding:14px; margin-top:18px; }
+.tip-box p { font-size:0.75rem; color:var(--text-dim); line-height:1.7; }
+.tip-box strong { color:var(--gold-light); }
+
+.confetti-piece { position:fixed; width:8px; height:8px; border-radius:2px; animation:cf 2s ease-in forwards; pointer-events:none; z-index:9999; }
+@keyframes cf { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(100vh) rotate(720deg);opacity:0} }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<nav>
+  <div class="nav-logo">Ankish &amp; Simar ✦</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">Home</button>
+    <button class="nav-tab" onclick="showPage('quiz')">Quiz</button>
+    <button class="nav-tab" onclick="showPage('archive')">Archive</button>
+    <button class="nav-tab" onclick="showPage('github')">GitHub</button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="container">
+    <div class="hero-photo-wrap">
+      <div class="hero-photo-placeholder" id="photo-placeholder" onclick="document.getElementById('photo-input').click()">
+        <span class="photo-icon">📸</span>
+        <span class="photo-label">Your car selfie goes here</span>
+        <span class="photo-sub">Tap to upload</span>
+      </div>
+      <img class="hero-uploaded" id="hero-img" alt="You two">
+      <input type="file" id="photo-input" accept="image/*" onchange="loadPhoto(this)">
+      <div class="names-bar">
+        <span class="name-tag">Ankish</span>
+        <span class="heart-center">♡</span>
+        <span class="name-tag">Simar</span>
+      </div>
+    </div>
+
+    <div class="countdown-wrap">
+      <div class="countdown-label">✈ Landing in Melbourne</div>
+      <div class="countdown-grid">
+        <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-lbl">Days</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-lbl">Hours</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-lbl">Mins</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-lbl">Secs</div></div>
+      </div>
+      <div class="countdown-sub">May 7th, 2026 · 12:00 PM AEST · Melbourne</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-head">
+      <div class="section-title">Our Story</div>
+      <div class="section-subtitle">The milestones that matter</div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">December 2, 2025</div>
+        <div class="tl-title">The First Hang 🥂</div>
+        <div class="tl-desc">The day it all started — before you even knew what you were building.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-date">January 16, 2026</div>
+        <div class="tl-title">Official ♡</div>
+        <div class="tl-desc">The day you chose each other. The start of something real.</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot future"></div>
+        <div class="tl-date">May 7, 2026</div>
+        <div class="tl-title">Melbourne, finally.</div>
+        <div class="tl-desc">The day the wait ends and the real adventure begins. Together.</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="section-head">
+      <div class="section-title">Today's Quiz <span class="pill-badge">New</span></div>
+      <div class="section-subtitle">50 questions across 5 categories</div>
+    </div>
+
+    <div class="quiz-card" onclick="showPage('quiz')" style="cursor:pointer">
+      <div class="quiz-category-badge">🏙️ The Future</div>
+      <div class="quiz-question">"Who is going to organise the first proper dinner party once you are settled in Melbourne?"</div>
+      <div style="text-align:center;margin-top:12px;"><span style="font-size:0.72rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">Tap to answer →</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="page-quiz" class="page">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-title">Daily Quiz</div>
+      <div class="section-subtitle">Answer independently, reveal together</div>
+    </div>
+
+    <div class="info-note">
+      <span>👤</span>
+      <p>Select who you are so your answer is saved correctly. Answers stay hidden until both of you have submitted.</p>
+    </div>
+
+    <div class="persona-select">
+      <button class="persona-btn active" id="btn-ankish" onclick="selectPersona('ankish')"><span>🧔</span><span>Ankish</span></button>
+      <button class="persona-btn" id="btn-simar" onclick="selectPersona('simar')"><span>👩</span><span>Simar</span></button>
+    </div>
+
+    <div class="section-head" style="margin-top:14px">
+      <div class="section-title" style="font-size:1.1rem">Categories</div>
+    </div>
+
+    <div class="categories-grid">
+      <div class="cat-card active" onclick="selectCategory(0,this)"><span class="cat-icon">🏙️</span><div class="cat-name">The Future</div><div class="cat-count">12 questions</div></div>
+      <div class="cat-card" onclick="selectCategory(1,this)"><span class="cat-icon">🏋️</span><div class="cat-name">Hobbies</div><div class="cat-count">12 questions</div></div>
+      <div class="cat-card" onclick="selectCategory(2,this)"><span class="cat-icon">💑</span><div class="cat-name">Relationship</div><div class="cat-count">14 questions</div></div>
+      <div class="cat-card" onclick="selectCategory(3,this)"><span class="cat-icon">🏀</span><div class="cat-name">NBA Debates</div><div class="cat-count">6 questions</div></div>
+      <div class="cat-card" style="grid-column:1/-1" onclick="selectCategory(4,this)"><span class="cat-icon">🎲</span><div class="cat-name">Wild Cards</div><div class="cat-count">6 questions</div></div>
+    </div>
+
+    <div class="quiz-card" id="quiz-card">
+      <div class="quiz-category-badge" id="quiz-cat-badge">🏙️ The Future</div>
+      <div class="quiz-question" id="quiz-q-text">Loading...</div>
+      <div class="quiz-options" id="quiz-options"></div>
+      <button class="submit-btn" id="submit-btn" onclick="submitAnswer()" disabled>Submit Answer</button>
+      <div class="locked-notice" id="locked-notice">
+        <span class="lock-icon">🔒</span>
+        <p><strong id="locked-name">Ankish</strong> has answered! Submit your answers to unlock the reveal.</p>
+      </div>
+      <div class="reveal-wrap" id="reveal-wrap">
+        <div class="reveal-header"><div class="reveal-title">✨ The Big Reveal</div></div>
+        <div class="reveal-answers" id="reveal-answers"></div>
+        <div class="match-bar-wrap">
+          <div class="match-label">Match Score</div>
+          <div class="match-pct" id="match-pct">— %</div>
+        </div>
+      </div>
+      <div class="quiz-nav">
+        <button class="quiz-nav-btn" onclick="prevQuiz()">← Prev</button>
+        <span class="quiz-counter" id="quiz-counter">1 / 12</span>
+        <button class="quiz-nav-btn" onclick="nextQuiz()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="page-archive" class="page">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-title">Memory Archive</div>
+      <div class="section-subtitle">Every quiz you have completed together</div>
+    </div>
+    <div id="archive-list"></div>
+  </div>
+</div>
+
+<!-- GITHUB GUIDE -->
+<div id="page-github" class="page">
+  <div class="container">
+    <div class="section-head">
+      <div class="section-title">Get it on your phones</div>
+      <div class="section-subtitle">Step-by-step GitHub Pages setup</div>
+    </div>
+
+    <div class="tip-box" style="margin-bottom:24px">
+      <p><strong>The goal:</strong> put this app on a free URL so both of you can open it on your phones anytime. GitHub Pages gives you a free link in about 3 minutes. No coding knowledge needed.</p>
+    </div>
+
+    <div class="github-guide">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-title">Create a free GitHub account</div>
+          <div class="step-desc">Go to <a href="https://github.com" target="_blank">github.com</a> and sign up. It is completely free. Pick any username — it will appear in your app URL so make it something nice like <em>ankishandsimar</em>.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-title">Create a new repository</div>
+          <div class="step-desc">Once logged in, click the green <strong>New</strong> button (or the + icon top right → New repository). Name it something like <em>almost-melbourne</em>. Set it to <strong>Public</strong>. Tick "Add a README file". Click <strong>Create repository</strong>.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-title">Upload the index.html file</div>
+          <div class="step-desc">Inside your new repository, click <strong>Add file → Upload files</strong>. Drag and drop the <em>index.html</em> file you downloaded from here. Scroll down and click <strong>Commit changes</strong>.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <div class="step-title">Turn on GitHub Pages</div>
+          <div class="step-desc">In your repository, click <strong>Settings</strong> (top tab row). Scroll down the left sidebar to <strong>Pages</strong>. Under "Source", select <strong>Deploy from a branch</strong>. Set branch to <strong>main</strong> and folder to <strong>/ (root)</strong>. Click <strong>Save</strong>.</div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <div class="step-title">Wait 60 seconds, then open your URL</div>
+          <div class="step-desc">GitHub will give you a URL that looks like this:
+            <div class="code-block">https://YOUR-USERNAME.github.io/almost-melbourne</div>
+            It takes about 60 seconds to go live after you save. Refresh the Pages settings page and the link will appear at the top. Send it to Simar. Bookmark it on both phones. Done.
+          </div>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <div class="step-title">Add it to your home screen (optional but recommended)</div>
+          <div class="step-desc">
+            <strong>On iPhone:</strong> Open the URL in Safari → tap the Share icon → tap "Add to Home Screen" → tap Add.<br><br>
+            <strong>On Android:</strong> Open in Chrome → tap the three dots menu → tap "Add to Home Screen".<br><br>
+            It will appear like an app icon on your home screen.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <p><strong>To update the app later</strong> (e.g. add a new photo or edit questions): go back to your GitHub repository, click on <em>index.html</em>, click the pencil edit icon, make changes, and click Commit. The live site updates automatically within a minute.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for (let i = 0; i < 120; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--delay:${Math.random()*6}s;--op:${0.3+Math.random()*0.7}`;
+  starsEl.appendChild(s);
+}
+
+// Nav
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  const idx = ['home','quiz','archive','github'].indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  if (id === 'archive') renderArchive();
+  window.scrollTo(0,0);
+}
+
+// Photo
+function loadPhoto(input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('hero-img');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    document.getElementById('photo-placeholder').style.display = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+// Countdown
+function updateCountdown() {
+  const target = new Date('2026-05-07T02:00:00Z');
+  const diff = target - new Date();
+  if (diff <= 0) { ['days','hours','mins','secs'].forEach(u => document.getElementById('cd-'+u).textContent='00'); return; }
+  const d = Math.floor(diff/86400000), h = Math.floor((diff%86400000)/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+  document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
+  document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+}
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// ── Quiz Data — 50 Questions ──
+const QUIZZES = [
+  // THE FUTURE (12)
+  {cat:'🏙️ The Future', q:'Who is going to organise the first proper dinner party once you are settled in Melbourne?', opts:['Ankish — he loves hosting','Simar — she has the better eye for detail','A joint effort, naturally','Whoever gets home first that day']},
+  {cat:'🏙️ The Future', q:'What does the first morning in your Melbourne apartment look like?', opts:['Coffee and a long walk exploring the neighbourhood','Unpacking every single box before anything else','Lying in until noon — you deserve it','Brunch out at the coolest cafe nearby']},
+  {cat:'🏙️ The Future', q:'First big purchase for the apartment?', opts:['A really good couch','A kitchen worth cooking in','Art for the walls','The most perfect bed ever']},
+  {cat:'🏙️ The Future', q:'Who picks the Melbourne suburb you eventually settle in?', opts:['Ankish — after a spreadsheet comparison','Simar — she trusts her gut','You Google it together for hours','Whoever finds the best coffee shop nearby']},
+  {cat:'🏙️ The Future', q:'What is the first road trip from Melbourne?', opts:['Great Ocean Road, immediately','The Grampians, for a proper hike','Up to Sydney to visit friends','Wherever Spotify Roadtrip mode takes you']},
+  {cat:'🏙️ The Future', q:'Who handles the apartment admin — lease, bills, utilities?', opts:['Ankish builds a spreadsheet for it','Simar is on top of it from day one','You split it evenly','Whoever notices something needs doing']},
+  {cat:'🏙️ The Future', q:'What is your vibe for the apartment decor?', opts:['Minimal and moody — dark tones, clean lines','Warm and cosy — plants, soft lighting, rugs','Modern and bright — white walls, statement pieces','A total mix — whatever you both love']},
+  {cat:'🏙️ The Future', q:'Who is more likely to suggest adopting a pet in the first year?', opts:['Ankish — he would love a dog','Simar — she would bring home a cat','Both at the same time, competing ideas','Neither — you will wait until settled']},
+  {cat:'🏙️ The Future', q:'What does your ideal Melbourne Friday evening look like?', opts:['Dinner out at a new restaurant, every week','Cooking together at home with good wine','Live music or a rooftop bar','Gym, takeaway, and something on TV']},
+  {cat:'🏙️ The Future', q:'In five years, where do you see yourselves living?', opts:['Still in Melbourne — it becomes home','Travelling and living abroad for a stretch','Back closer to family for a while','Somewhere neither of you has thought of yet']},
+  {cat:'🏙️ The Future', q:'Who is more excited about building a social life in Melbourne from scratch?', opts:['Ankish — he thrives meeting new people','Simar — she is quietly excited about a fresh start','Both equally — it is a shared adventure','Neither — the idea is daunting but worth it']},
+  {cat:'🏙️ The Future', q:'What is the first thing you do together when the plane lands in Melbourne?', opts:['Find the best meal near the airport, immediately','Head straight to the apartment and breathe','Call your families to say you have arrived','Take a photo together to mark the moment']},
+
+  // HOBBIES (12)
+  {cat:'🏋️ Hobbies', q:'Who controls the gym playlist during a heavy 615 kg lifting session?', opts:['Ankish — pure focus, no negotiation','Simar — she sets the energy','Whoever got there first','You share a queue and take turns']},
+  {cat:'🏋️ Hobbies', q:'Who is more likely to stress over a law school deadline at 2am?', opts:['Simar — she cares deeply about every detail','Ankish gets anxious in solidarity','Neither — both are calm under pressure','Both, together, panicking over the kitchen table']},
+  {cat:'🏋️ Hobbies', q:'After a huge PR at the gym, what is the vibe?', opts:['Celebratory meal immediately','Document it for the gram','Set a new goal within 20 minutes','Tell absolutely everyone you know']},
+  {cat:'🏋️ Hobbies', q:'On a lazy Sunday, what wins?', opts:['A long walk with good music','Binge-watching something new on Netflix','Cooking an ambitious meal together','Absolutely nothing — couch and silence']},
+  {cat:'🏋️ Hobbies', q:'Who is more competitive about their personal goals?', opts:['Ankish, quietly but intensely','Simar, openly and loudly','You are both equally driven','It depends on the goal entirely']},
+  {cat:'🏋️ Hobbies', q:'Who is more likely to drag the other to a 6am workout?', opts:['Ankish — he is the early riser','Simar — once she sets a plan, it is happening','You motivate each other equally','Neither — 6am is not a real time']},
+  {cat:'🏋️ Hobbies', q:'Who reads more — books, articles, or anything?', opts:['Ankish, constantly','Simar — especially for law school','You are both big readers','Neither — you prefer podcasts or videos']},
+  {cat:'🏋️ Hobbies', q:'If you had a free weekend with no plans, what would you do?', opts:['Road trip somewhere spontaneous','Stay home and fully recharge','Try a new hobby or activity together','Visit friends and make a social weekend of it']},
+  {cat:'🏋️ Hobbies', q:'Who has a bigger music knowledge?', opts:['Ankish — and he will quiz you on it','Simar — her playlists are unmatched','You are both obsessed in different genres','Neither — you both just like what you like']},
+  {cat:'🏋️ Hobbies', q:'Who is more likely to sign up for a half marathon or fitness challenge?', opts:['Ankish — he loves a structured goal','Simar — she commits hard when she decides','Both of you, to compete against each other','Neither — the gym is enough']},
+  {cat:'🏋️ Hobbies', q:'Whose cooking experiment goes wrong more often?', opts:['Ankish — ambition sometimes exceeds skill','Simar — she experiments boldly','You are both equally disastrous at new recipes','Neither — you both stick to what you know']},
+  {cat:'🏋️ Hobbies', q:'Who is more likely to stay up until 2am falling down a research rabbit hole?', opts:['Ankish — once he starts, he cannot stop','Simar — especially for a case or assignment','Both of you, on completely different topics','Neither — sleep wins every time']},
+
+  // RELATIONSHIP (14)
+  {cat:'💑 Relationship', q:'Who apologises first after a silly argument?', opts:['Ankish always breaks first','Simar — she cannot stand the silence','Whoever was actually wrong','The first one who gets hungry']},
+  {cat:'💑 Relationship', q:'Who is more likely to organise a massive surprise social event?', opts:['Ankish — he loves the spectacle','Simar — she handles the details beautifully','This would be a team project','Neither — you prefer intimate gatherings']},
+  {cat:'💑 Relationship', q:'Who is the better cook?', opts:['Ankish, hands down','Simar, and she knows it','You are equally matched','It depends on the cuisine entirely']},
+  {cat:'💑 Relationship', q:'In a disagreement, who stays calmer?', opts:['Ankish — he goes very quiet','Simar — she stays logical','Neither — you both get passionate','It completely depends on the topic']},
+  {cat:'💑 Relationship', q:'Who is the first to say "I love you" randomly out of nowhere?', opts:['Ankish, with absolutely no warning','Simar, at the weirdest moments','You both do it equally','Whoever is feeling soft that day']},
+  {cat:'💑 Relationship', q:'Who is more likely to remember an important date — anniversary, birthday, etc.?', opts:['Ankish — he has it in his calendar with reminders','Simar — she remembers without needing a reminder','You both panic about it equally','You both have a shared calendar that does the work']},
+  {cat:'💑 Relationship', q:'Who sends more voice notes in a day?', opts:['Ankish — paragraphs of audio','Simar — she prefers talking to typing','You are both equally guilty','Neither — you just call each other']},
+  {cat:'💑 Relationship', q:'Who is more likely to make a grand romantic gesture out of nowhere?', opts:['Ankish — he thinks big','Simar — she picks perfect small details','Both of you, in totally different ways','Neither — you show love through everyday things']},
+  {cat:'💑 Relationship', q:'Who takes longer to get ready?', opts:['Ankish — but he will never admit it','Simar — and she owns it','You are both equally slow','You are both surprisingly efficient']},
+  {cat:'💑 Relationship', q:'Who is the bigger overthinker?', opts:['Ankish — he runs every scenario','Simar — especially when it matters','You are both overthinking machines','Neither — you are both decisive']},
+  {cat:'💑 Relationship', q:'Who gives better advice to their friends?', opts:['Ankish — practical and straight to the point','Simar — empathetic and thorough','You are both people that people turn to','It depends on what kind of advice is needed']},
+  {cat:'💑 Relationship', q:'Who is more protective of the other?', opts:['Ankish — quietly but intensely','Simar — she will go to bat without hesitation','You are both equally protective','You give each other space but have each other\'s backs']},
+  {cat:'💑 Relationship', q:'What is your love language as a couple?', opts:['Quality time — being present is everything','Acts of service — you show up for each other','Words of affirmation — you say it often','Physical touch — the small gestures add up']},
+  {cat:'💑 Relationship', q:'Who is going to cry first at your wedding?', opts:['Ankish — he will not even try to hold it in','Simar — she will be overwhelmed','Both of you, at the same moment','Neither — you are both going to be laughing']},
+
+  // NBA (6)
+  {cat:'🏀 NBA Debates', q:'GOAT debate — final verdict?', opts:['LeBron — longevity and versatility wins','MJ — no further discussion required','It is genuinely impossible to choose','Whoever has more rings, so MJ']},
+  {cat:'🏀 NBA Debates', q:'Who wins the NBA championship this season?', opts:['Oklahoma City Thunder — it is their year','Boston Celtics defend the title','Golden State makes another run','Dark horse — Cleveland Cavaliers']},
+  {cat:'🏀 NBA Debates', q:'Best NBA rivalry of the last decade?', opts:['Warriors vs Cavaliers — nothing comes close','Lakers vs Celtics — it is a classic','Bucks vs Nets','Any series that goes to a Game 7']},
+  {cat:'🏀 NBA Debates', q:'Most exciting player to watch right now?', opts:['Shai Gilgeous-Alexander','Nikola Jokic — pure basketball IQ','Victor Wembanyama — the future is here','LeBron James, still']},
+  {cat:'🏀 NBA Debates', q:'Best era of NBA basketball?', opts:['The 90s — MJ, physicality, no-nonsense','The 2010s Warriors dynasty era','Right now — the talent is unreal','The 80s Showtime Lakers and Celtics rivalry']},
+  {cat:'🏀 NBA Debates', q:'If you could go to one NBA game together, which matchup?', opts:['A Lakers vs Celtics finals game','OKC in a big playoff game','Any game where LeBron might retire','The NBA All-Star game for the vibes']},
+
+  // WILD CARDS (6)
+  {cat:'🎲 Wild Cards', q:'Morning person or night owl — which one is actually you?', opts:['Morning person — 100%, no debate','Night owl — nights are when you come alive','Depends entirely on the day','Neither — you are always slightly tired']},
+  {cat:'🎲 Wild Cards', q:'If you could only eat one cuisine for the rest of your life in Melbourne?', opts:['Indian — there is no other answer','Japanese — ramen and sushi forever','Italian — pasta and pizza solves everything','Melbourne brunch food — it deserves its own category']},
+  {cat:'🎲 Wild Cards', q:'Who would survive longer if you had no phones for a week?', opts:['Ankish — he could disconnect if he had to','Simar — she would adapt faster','Neither of you — this is not a real scenario','Both would genuinely thrive after day two']},
+  {cat:'🎲 Wild Cards', q:'Beach holiday or mountain trip — which wins every time?', opts:['Beach — sunshine and salt water','Mountains — hiking and fresh air','Depends on who needs what that month','A city trip beats both options']},
+  {cat:'🎲 Wild Cards', q:'Who is more likely to make a spontaneous decision that changes the whole plan?', opts:['Ankish — his ideas come out of nowhere','Simar — she pivots fast and confidently','You both do it and somehow it works','Neither — you are both planners at heart']},
+  {cat:'🎲 Wild Cards', q:'If a movie was made about your relationship, what genre would it be?', opts:['A romantic drama — beautifully intense','A comedy — genuinely funny throughout','A documentary — your story deserves that treatment','An adventure film — always moving, always something new']},
+];
+
+const CAT_NAMES = ['🏙️ The Future','🏋️ Hobbies','💑 Relationship','🏀 NBA Debates','🎲 Wild Cards'];
+let currentPersona = 'ankish', currentCat = 0, currentQIdx = 0, selectedOption = null;
+let answers = JSON.parse(localStorage.getItem('qa2') || '{}');
+let archive = JSON.parse(localStorage.getItem('qa2_archive') || '[]');
+
+function getQuizzesForCat(idx) {
+  return QUIZZES.map((q,i) => ({...q, globalIdx:i})).filter(q => q.cat === CAT_NAMES[idx]);
+}
+let catQuizzes = getQuizzesForCat(0);
+
+function selectPersona(p) {
+  currentPersona = p;
+  document.getElementById('btn-ankish').classList.toggle('active', p==='ankish');
+  document.getElementById('btn-simar').classList.toggle('active', p==='simar');
+  renderQuiz();
+}
+
+function selectCategory(idx, el) {
+  currentCat = idx; currentQIdx = 0; selectedOption = null;
+  document.querySelectorAll('.cat-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  catQuizzes = getQuizzesForCat(idx);
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const q = catQuizzes[currentQIdx];
+  if (!q) return;
+  const gIdx = q.globalIdx;
+  const state = answers[gIdx] || {};
+
+  document.getElementById('quiz-cat-badge').textContent = q.cat;
+  document.getElementById('quiz-q-text').textContent = q.q;
+  document.getElementById('quiz-counter').textContent = `${currentQIdx+1} / ${catQuizzes.length}`;
+
+  const optsEl = document.getElementById('quiz-options');
+  optsEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectOption(i);
+    if (state[currentPersona] !== undefined) {
+      btn.disabled = true;
+      if (state[currentPersona] === i) btn.classList.add('selected');
+    }
+    optsEl.appendChild(btn);
+  });
+
+  const submitBtn = document.getElementById('submit-btn');
+  const lockedNotice = document.getElementById('locked-notice');
+  const revealWrap = document.getElementById('reveal-wrap');
+  selectedOption = null;
+  submitBtn.disabled = true;
+
+  const myName = currentPersona.charAt(0).toUpperCase()+currentPersona.slice(1);
+  const other = currentPersona==='ankish'?'simar':'ankish';
+
+  if (state.ankish !== undefined && state.simar !== undefined) {
+    submitBtn.style.display = 'none';
+    lockedNotice.style.display = 'none';
+    revealWrap.classList.add('show');
+    renderReveal(q, state);
+  } else if (state[currentPersona] !== undefined) {
+    submitBtn.style.display = 'none';
+    lockedNotice.style.display = 'block';
+    document.getElementById('locked-name').textContent = myName;
+    revealWrap.classList.remove('show');
+  } else {
+    submitBtn.style.display = 'block';
+    submitBtn.disabled = selectedOption === null;
+    lockedNotice.style.display = 'none';
+    revealWrap.classList.remove('show');
+  }
+}
+
+function selectOption(idx) {
+  const state = answers[catQuizzes[currentQIdx].globalIdx] || {};
+  if (state[currentPersona] !== undefined) return;
+  selectedOption = idx;
+  document.querySelectorAll('.quiz-option').forEach((el,i) => el.classList.toggle('selected', i===idx));
+  document.getElementById('submit-btn').disabled = false;
+}
+
+function submitAnswer() {
+  if (selectedOption === null) return;
+  const q = catQuizzes[currentQIdx];
+  const gIdx = q.globalIdx;
+  if (!answers[gIdx]) answers[gIdx] = {};
+  answers[gIdx][currentPersona] = selectedOption;
+  localStorage.setItem('qa2', JSON.stringify(answers));
+  if (answers[gIdx].ankish !== undefined && answers[gIdx].simar !== undefined) {
+    saveToArchive(q, answers[gIdx], gIdx);
+    triggerConfetti();
+  }
+  renderQuiz();
+}
+
+function renderReveal(q, state) {
+  const revealEl = document.getElementById('reveal-answers');
+  const isMatch = state.ankish === state.simar;
+  revealEl.innerHTML = `
+    <div class="reveal-person"><div class="reveal-name">Ankish</div><div class="reveal-ans">${q.opts[state.ankish]}</div></div>
+    <div class="reveal-person"><div class="reveal-name">Simar</div><div class="reveal-ans">${q.opts[state.simar]}</div></div>
+  `;
+  let matches=0, total=0;
+  catQuizzes.forEach(cq => {
+    const s = answers[cq.globalIdx];
+    if (s && s.ankish !== undefined && s.simar !== undefined) { total++; if(s.ankish===s.simar) matches++; }
+  });
+  const pct = total > 0 ? Math.round((matches/total)*100) : (isMatch?100:0);
+  document.getElementById('match-pct').innerHTML = `${pct}%<span class="match-heart">♡</span>`;
+}
+
+function saveToArchive(q, state, gIdx) {
+  if (archive.find(a => a.gIdx===gIdx)) return;
+  archive.unshift({ gIdx, cat:q.cat, q:q.q, ankishAns:q.opts[state.ankish], simarAns:q.opts[state.simar], match:state.ankish===state.simar, date:new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'}) });
+  localStorage.setItem('qa2_archive', JSON.stringify(archive));
+}
+
+function renderArchive() {
+  const el = document.getElementById('archive-list');
+  if (archive.length === 0) {
+    el.innerHTML = '<div class="empty-archive"><span class="icon">📂</span><p>Complete your first quiz together to see it archived here.</p></div>';
+    return;
+  }
+  const matchCount = archive.filter(a=>a.match).length;
+  const total = archive.length;
+  el.innerHTML = `
+    <div class="match-bar-wrap" style="margin-bottom:18px;text-align:center;padding:14px;background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:11px;">
+      <div class="match-label">Overall Match Score</div>
+      <div class="match-pct">${Math.round((matchCount/total)*100)}%<span class="match-heart">♡</span></div>
+      <div style="font-size:0.7rem;color:var(--text-muted);margin-top:5px;">${total} quiz${total!==1?'es':''} completed · ${matchCount} matched</div>
+    </div>
+  ` + archive.map(a => `
+    <div class="archive-item">
+      <div class="archive-item-top"><div><div class="archive-cat">${a.cat}</div><div style="font-size:0.58rem;color:var(--text-muted);margin-top:2px;">${a.date}</div></div><div class="archive-match">${a.match?'100%':'0%'} ${a.match?'♡':''}</div></div>
+      <div class="archive-q">${a.q}</div>
+      <div class="archive-answers">
+        <div class="arch-ans-chip ${a.match?'match':'diff'}"><span class="arch-ans-name">Ankish</span>${a.ankishAns}</div>
+        <div class="arch-ans-chip ${a.match?'match':'diff'}"><span class="arch-ans-name">Simar</span>${a.simarAns}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function prevQuiz() { if(currentQIdx>0){currentQIdx--;selectedOption=null;renderQuiz();} }
+function nextQuiz() { if(currentQIdx<catQuizzes.length-1){currentQIdx++;selectedOption=null;renderQuiz();} }
+
+function triggerConfetti() {
+  const colors = ['#c9a84c','#e8c870','#f5e4b0','#e8a0a0','#a8e6b8','#ffffff'];
+  for (let i=0;i<50;i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.cssText = `left:${Math.random()*100}vw;top:-10px;background:${colors[Math.floor(Math.random()*colors.length)]};animation-delay:${Math.random()*0.8}s;animation-duration:${1.5+Math.random()*1.5}s;transform:rotate(${Math.random()*360}deg)`;
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(), 3500);
+  }
+}
+
+renderQuiz();
+</script>
+</body>
+</html>
